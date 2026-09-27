@@ -145,14 +145,20 @@ if (reduced || document.documentElement.classList.contains('no-js')) {
   const drawStep = (i) => { gc.clearRect(0, 0, 56, 56); gc.fillStyle = '#D0FF00'; paint(gc, PROGRESSION[i], 0, 0, 8); };
   const state = { p: 0 };
   drawStep(0);
+  let finished = false;
+  const finish = () => {                                    // idempotent: tween end, visibility change or the 4.5s guard
+    if (finished) return; finished = true;
+    pct.textContent = '100%'; bar.style.transform = 'scaleX(1)'; drawStep(4);
+    gsap.to(loader, { yPercent: -100, duration: 0.9, ease: 'expo.inOut', onComplete: () => { loader.remove(); lenis && lenis.start(); ScrollTrigger.refresh(); } });
+    gsap.delayedCall(0.35, intro);
+  };
   gsap.to(state, {
     p: 100, duration: 1.5, ease: 'power2.inOut',
     onUpdate: () => { const v = Math.round(state.p); pct.textContent = String(v).padStart(2, '0') + '%'; bar.style.transform = `scaleX(${state.p / 100})`; drawStep(Math.min(4, Math.floor(state.p / 20.01))); },
-    onComplete: () => {
-      gsap.to(loader, { yPercent: -100, duration: 0.9, ease: 'expo.inOut', onComplete: () => { loader.remove(); lenis && lenis.start(); ScrollTrigger.refresh(); } });
-      gsap.delayedCall(0.35, intro);
-    },
+    onComplete: finish,
   });
+  setTimeout(finish, 4500);                                  // never trap a background tab on the loader
+  addEventListener('visibilitychange', () => { if (!document.hidden && state.p >= 99) finish(); });
 }
 
 /* ---------- reveals ---------- */
