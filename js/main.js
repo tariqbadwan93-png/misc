@@ -121,7 +121,7 @@ const hero = $('#hero');
 ScrollTrigger.create({
   trigger: hero, start: 'top top', end: 'bottom top', scrub: true,
   onUpdate: (st) => { field.setScroll(st.progress); field.setTop(-st.scroll()); },
-  onToggle: (st) => (st.isActive ? field.start() : field.stop()),
+  onToggle: (st) => { st.isActive ? field.start() : field.stop(); readout.classList.toggle('is-off', st.isActive); },
 });
 hero.addEventListener('pointerdown', (e) => field.ripple(e.clientX, e.clientY));
 addEventListener('visibilitychange', () => (document.hidden ? field.stop() : ScrollTrigger.isInViewport(hero) && field.start()));
