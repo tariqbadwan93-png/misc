@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>misc.* design house — the future is miscellaneous</title>
+  <meta name="description" content="misc. is a multi-disciplinary design house: branding, spaces, apps, menus, whatever's next. From scribble to shipped.">
+  <meta name="theme-color" content="#080808">
+  <meta property="og:title" content="misc.* design house">
+  <meta property="og:description" content="we don't do one thing. we do the thing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://misc.house/">
+  <link rel="canonical" href="https://misc.house/">
+  <meta property="og:image" content="https://misc.house/assets/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Shadows+Into+Light&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/cascadia-mono@5/index.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Shadows+Into+Light&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/cascadia-mono@5/index.css">
+  </noscript>
+  <link rel="modulepreload" href="js/glyphs.js">
+  <link rel="modulepreload" href="js/pointer.js">
+  <link rel="modulepreload" href="js/field.js">
+  <link rel="modulepreload" href="js/dither.js">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script>document.documentElement.classList.replace('no-js','js')</script>
+</head>
+<body>
+
+<!-- 00 — LOADER -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <canvas class="loader__glyph" id="loaderGlyph" width="56" height="56"></canvas>
+    <div class="loader__row">
+      <span class="mono">loading…</span>
+      <span class="mono loader__pct" id="loaderPct">00%</span>
+    </div>
+  </div>
+  <div class="loader__bar"><i id="loaderBar"></i></div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor" aria-hidden="true"><i class="cursor__dot"></i><i class="cursor__ring"></i></div>
+<div class="readout mono" id="readout" aria-hidden="true">loading… <span id="readoutPct">00%</span></div>
+
+<!-- NAV -->
+<header class="nav" id="nav" data-theme="void">
+  <a class="nav__brand" href="#top" aria-label="misc. home">
+    <svg class="nav__mark" viewBox="0 0 7 7" shape-rendering="crispEdges" aria-hidden="true"><g fill="currentColor"><rect x="3" y="0" width="1" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="3" y="1" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="0" y="3" width="2" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="5" y="3" width="2" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="3" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/></g></svg>
+    <span class="nav__word">misc<span class="nav__dot">.</span></span>
+  </a>
+  <nav class="nav__links mono" aria-label="Primary">
+    <a class="link" href="#work">work</a><span class="nav__sep">—</span>
+    <a class="link" href="#studio">studio</a><span class="nav__sep">—</span>
+    <a class="link" href="#contact">contact</a>
+  </nav>
+  <a class="btn nav__cta magnetic" href="#contact">start a thing <i class="glyph" data-glyph="arrow"></i></a>
+  <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
+</header>
+
+<nav class="menu" id="menu" aria-label="Menu" aria-hidden="true">
+  <a class="display h2" href="#work">work</a>
+  <a class="display h2" href="#studio">studio</a>
+  <a class="display h2" href="#contact">contact</a>
+  <a class="mono mono--lime mono--copy" href="mailto:hello@misc.house">hello@misc.house</a>
+</nav>
+
+<main id="top">
+
+<!-- 01 — HERO -->
+<section class="hero" id="hero">
+  <canvas class="hero__field" id="field" aria-hidden="true"></canvas>
+  <div class="hero__meta mono">
+    <span>misc.* design house</span>
+    <span>company profile — 2026</span>
+  </div>
+  <div class="hero__body">
+    <h1 class="display h1 hero__title" id="heroTitle"><span class="lines"><span class="line"><span>misc<span class="lime">.</span></span></span></span></h1>
+    <div class="hero__aside">
+      <p class="lead hero__tag" id="heroTag">the future is <span class="lime">miscellaneous.</span></p>
+      <p class="scribble hero__scribble" id="heroScribble">everything else, done properly <span class="scribble__arrow">↗</span></p>
+    </div>
+  </div>
+  <div class="hero__foot">
+    <p class="hero__line">branding, spaces, apps, menus, whatever's next<span class="ast">*</span></p>
+    <span class="mono hero__scroll" id="scrollHint">scroll <i>↓</i></span>
+  </div>
+</section>
+
+<!-- 02 — MANIFESTO -->
+<section class="section manifesto surface--lime" id="manifesto">
+  <div class="section__head mono">
+    <span>02 — manifesto</span>
+    <span>*terms &amp; conditions: none</span>
+  </div>
+  <p class="display h2 manifesto__text" id="manifestoText">we don't do one thing. we do the thing — the brand, the room it lives in, the app in your pocket and the menu on the table.</p>
+  <div class="manifesto__foot">
+    <p class="lead manifesto__note reveal">Miscellaneous is not a category. It's a refusal to pick one.</p>
+    <i class="glyph glyph--xl glyph--void manifesto__mark" data-glyph="mark" id="manifestoMark"></i>
+  </div>
+</section>
+
+<!-- 03 — WHAT WE DO -->
+<section class="section services" id="studio">
+  <div class="section__head mono">
+    <span>03 — what we do</span>
+    <span class="mono--lime">six disciplines, one studio</span>
+  </div>
+  <h2 class="display h2 reveal">what we do</h2>
+  <ul class="services__grid" id="services">
+    <li class="service" data-n="01"><i class="glyph" data-glyph="plus"></i><h3 class="h4">branding</h3><p class="mute">identity, naming, systems that survive contact with reality.</p></li>
+    <li class="service" data-n="02"><i class="glyph" data-glyph="bracket"></i><h3 class="h4">spaces &amp; exhibitions</h3><p class="mute">pop-ups, stands, retail — brand you can walk through.</p></li>
+    <li class="service" data-n="03"><i class="glyph" data-glyph="smile"></i><h3 class="h4">concept f&amp;b</h3><p class="mute">from the idea to the menu to the neon in the window.</p></li>
+    <li class="service" data-n="04"><i class="glyph" data-glyph="stair"></i><h3 class="h4">web design</h3><p class="mute">fast, odd, unmistakably yours. built, not templated.</p></li>
+    <li class="service" data-n="05"><i class="glyph" data-glyph="ring"></i><h3 class="h4">app development</h3><p class="mute">iOS, Android, whatever's next. design and code in one room.</p></li>
+    <li class="service" data-n="06"><i class="glyph glyph--plum" data-glyph="arrow"></i><h3 class="h4">marketing &amp; et cetera<span class="ast ast--plum">*</span></h3><p class="mute">campaigns, content, launches — and the stuff without a name yet.</p></li>
+  </ul>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" id="ticker" aria-hidden="true"><div class="ticker__track mono" id="tickerTrack"></div></div>
+
+<!-- 04 — HOW WE WORK -->
+<section class="section process" id="process">
+  <div class="section__head mono">
+    <span>04 — how we work</span>
+    <span class="mono--lime">scribble → pixel</span>
+  </div>
+  <div class="process__stage" id="processStage">
+    <div class="process__left">
+      <h2 class="display h2 reveal">how we work</h2>
+      <canvas class="process__glyph" id="processGlyph" width="336" height="336" aria-hidden="true"></canvas>
+      <div class="process__counter mono"><span id="processN">01</span> / 05</div>
+    </div>
+    <ol class="process__steps" id="processSteps">
+      <li class="step is-active"><span class="mono step__n">01</span><h3 class="h3 display">listen</h3><p class="mute">the dot. one conversation, no deck, no pitch.</p></li>
+      <li class="step"><span class="mono step__n">02</span><h3 class="h3 display">scribble</h3><p class="mute">the ring. ugly sketches, fast. every discipline in the room.</p></li>
+      <li class="step"><span class="mono step__n">03</span><h3 class="h3 display">argue</h3><p class="mute">the x. we kill the obvious idea before it costs you money.</p></li>
+      <li class="step"><span class="mono step__n">04</span><h3 class="h3 display">build</h3><p class="mute">the frame. brand, space, code — made together, not handed off.</p></li>
+      <li class="step"><span class="mono step__n">05</span><h3 class="h3 display">ship</h3><p class="mute">the mark. opening night, launch day, app store. then we stay.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 05 — WHO WE'RE FOR -->
+<section class="section for" id="for">
+  <div class="section__head mono">
+    <span>05 — who we're for</span>
+    <span class="mono--lime">img / studio session</span>
+  </div>
+  <div class="for__grid">
+    <div class="for__list">
+      <h2 class="display h2 reveal">who we're for</h2>
+      <ul class="rows" id="forRows">
+        <li class="row"><span class="row__t">founders launching something new</span><span class="mono row__n">01</span></li>
+        <li class="row"><span class="row__t">hospitality groups opening a concept</span><span class="mono row__n">02</span></li>
+        <li class="row"><span class="row__t">brands that need a stand, a site and a story</span><span class="mono row__n">03</span></li>
+        <li class="row"><span class="row__t">teams tired of managing five agencies</span><span class="mono row__n mono--plum">04*</span></li>
+      </ul>
+      <p class="scribble reveal">*this one's usually how it starts</p>
+    </div>
+    <figure class="for__img dither" data-palette="lime">
+      <img src="assets/img/studio.jpg" alt="Studio session: the team around a table of laptops" loading="lazy" decoding="async">
+      <canvas aria-hidden="true"></canvas>
+      <figcaption class="pill pill--fill" aria-hidden="true">img / studio session</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 06 — WHY MISC. -->
+<section class="section why surface--plum" id="why">
+  <canvas class="why__field" id="whyField" aria-hidden="true"></canvas>
+  <div class="section__head mono">
+    <span>06 — why misc.</span>
+    <span>three reasons</span>
+  </div>
+  <h2 class="display h2 reveal">why misc.</h2>
+  <ol class="why__grid" id="whyGrid">
+    <li class="reason"><span class="display reason__n lime">1</span><h3 class="h4">one room, every discipline</h3><p>the architect sits next to the developer. the brand holds together because the people do.</p></li>
+    <li class="reason"><span class="display reason__n lime">2</span><h3 class="h4">we ship, not just present</h3><p>decks are a means. openings, launches and app-store listings are the end.</p></li>
+    <li class="reason"><span class="display reason__n lime">3</span><h3 class="h4">rebellious by default</h3><p>safe is expensive. we start every job by asking what everyone else would do — then don't.</p></li>
+  </ol>
+</section>
+
+<!-- 07 — STUDIO IN NUMBERS -->
+<section class="section numbers" id="numbers">
+  <div class="section__head mono">
+    <span>07 — studio in numbers</span>
+    <span class="mono--lime">update quarterly</span>
+  </div>
+  <h2 class="display h2 reveal">studio in numbers</h2>
+  <ul class="numbers__grid">
+    <li class="stat"><span class="mono">founded</span><span class="display h2 stat__v lime" data-count="25" data-prefix="’">’25</span><p class="mute">young enough to ignore the rules</p></li>
+    <li class="stat"><span class="mono">disciplines</span><span class="display h2 stat__v" data-count="6">6<span class="ast ast--plum">*</span></span><p class="mute">*and counting</p></li>
+    <li class="stat"><span class="mono">projects shipped</span><span class="display h2 stat__v" data-count="0" data-pad="2">00</span><p class="mute">brands, spaces, apps, menus</p></li>
+    <li class="stat"><span class="mono">people</span><span class="display h2 stat__v" data-count="0" data-pad="2">00</span><p class="mute">designers, architects, developers, cooks</p></li>
+  </ul>
+</section>
+
+<!-- 08 — SELECTED WORK -->
+<section class="section work" id="work">
+  <canvas class="work__field" id="workField" aria-hidden="true"></canvas>
+  <div class="section__head mono">
+    <span>08 — selected work</span>
+    <span class="mono--lime">2025 → now</span>
+  </div>
+  <div class="work__title">
+    <h2 class="display h2 reveal">selected work<span class="ast">*</span></h2>
+    <p class="scribble reveal">*the ones we're allowed to show</p>
+  </div>
+  <ul class="work__grid" id="workGrid">
+    <li class="card card--wide">
+      <a class="card__link" href="#contact">
+        <figure class="card__img dither" data-palette="mono"><img src="assets/img/interior.jpg" alt="[project title] — the finished space, dithered" loading="lazy" decoding="async"><canvas aria-hidden="true"></canvas><span class="pill pill--fill card__tag" aria-hidden="true">img 01 — hero</span></figure>
+        <div class="card__meta">
+          <span class="mono mute">project 01 — [client name] · [year]</span>
+          <h3 class="h3 display">[project title]</h3>
+          <div class="card__pills"><span class="pill">branding</span><span class="pill">space</span><span class="pill">web</span></div>
+        </div>
+      </a>
+    </li>
+    <li class="card">
+      <a class="card__link" href="#contact">
+        <figure class="card__img dither" data-palette="plum"><img src="assets/img/cafe.jpg" alt="[project title] — the concept's dining room, dithered" loading="lazy" decoding="async"><canvas aria-hidden="true"></canvas><span class="pill card__tag" aria-hidden="true">[image — replace]</span></figure>
+        <div class="card__meta">
+          <span class="mono mute">project 02 — [client name] · [year]</span>
+          <h3 class="h3 display">[project title]</h3>
+          <div class="card__pills"><span class="pill">f&amp;b</span><span class="pill">space</span></div>
+        </div>
+      </a>
+    </li>
+    <li class="card">
+      <a class="card__link" href="#contact">
+        <figure class="card__img dither" data-palette="lime"><img src="assets/img/maker.jpg" alt="[project title] — fabrication in progress, dithered" loading="lazy" decoding="async"><canvas aria-hidden="true"></canvas><span class="pill pill--fill card__tag" aria-hidden="true">img 02</span></figure>
+        <div class="card__meta">
+          <span class="mono mute">project 03 — [client name] · [year]</span>
+          <h3 class="h3 display">[project title]</h3>
+          <div class="card__pills"><span class="pill">app</span><span class="pill">web</span></div>
+        </div>
+      </a>
+    </li>
+    <li class="card card--wide">
+      <a class="card__link" href="#contact">
+        <figure class="card__img dither" data-palette="mono"><img src="assets/img/crowd.jpg" alt="[project title] — launch night crowd, dithered" loading="lazy" decoding="async"><canvas aria-hidden="true"></canvas><span class="pill card__tag" aria-hidden="true">img 01 — hero</span></figure>
+        <div class="card__meta">
+          <span class="mono mute">project 04 — [client name] · [year]</span>
+          <h3 class="h3 display">[project title]</h3>
+          <div class="card__pills"><span class="pill">launch</span><span class="pill">campaign</span></div>
+        </div>
+      </a>
+    </li>
+  </ul>
+  <div class="work__outcome surface--lime" id="outcome">
+    <span class="mono">[project title] — what happened next</span>
+    <div class="work__metrics">
+      <div><span class="display h2">00%</span><span class="mono">footfall vs. previous launch</span></div>
+      <div><span class="display h2">00k</span><span class="mono">app downloads in week one</span></div>
+      <div><span class="display h2">00</span><span class="mono">weeks from scribble to opening</span></div>
+    </div>
+    <p class="lead">“Client quote. Two lines max. The thing they said when they saw it finished.”</p>
+    <span class="mono">[name] — [role, client]</span>
+  </div>
+</section>
+
+<!-- 13 — THE PEOPLE -->
+<section class="section people" id="people">
+  <div class="section__head mono">
+    <span>13 — the people</span>
+    <span class="mono--lime">generalists, on purpose</span>
+  </div>
+  <h2 class="display h2 reveal">the people</h2>
+  <ul class="people__grid">
+    <li class="person"><figure class="dither" data-palette="mono"><img src="assets/img/portrait-1.jpg" alt="Portrait of [name], founder and creative" loading="lazy" decoding="async"><canvas aria-hidden="true"></canvas></figure><span class="h4">[name]</span><span class="mono mono--lime">founder / creative</span></li>
+    <li class="person"><figure class="dither" data-palette="plum"><img src="assets/img/portrait-2.jpg" alt="Portrait of [name], spaces and architecture" loading="lazy" decoding="async"><canvas aria-hidden="true"></canvas></figure><span class="h4">[name]</span><span class="mono mono--lime">spaces / architecture</span></li>
+    <li class="person"><figure class="dither" data-palette="mono"><img src="assets/img/portrait-3.jpg" alt="Portrait of [name], web and app" loading="lazy" decoding="async"><canvas aria-hidden="true"></canvas></figure><span class="h4">[name]</span><span class="mono mono--lime">web / app</span></li>
+    <li class="person person--you"><a class="person__you surface--graphite" href="mailto:hello@misc.house?subject=generalist*" aria-label="you? — email us about joining as a generalist"><i class="glyph glyph--xl" data-glyph="mark"></i></a><span class="h4">you?</span><span class="mono mono--plum">generalist*</span></li>
+  </ul>
+</section>
+
+<!-- 14 — LET'S MAKE A THING -->
+<section class="section contact" id="contact">
+  <div class="section__head mono">
+    <span>14 — let's make a thing</span>
+    <span>misc.* design house</span>
+  </div>
+  <div class="contact__grid">
+    <div class="contact__loader">
+      <div class="progression" id="contactProg" aria-hidden="true"></div>
+      <span class="mono mute">your project, loading…</span>
+    </div>
+    <div class="contact__body">
+      <h2 class="display h1 contact__title" id="contactTitle">let's make<br>a thing<span class="ast">*</span></h2>
+      <p class="scribble reveal">*any thing. that's the point.</p>
+    </div>
+    <address class="contact__info mono">
+      <a class="contact__mail link display" href="mailto:hello@misc.house">hello@misc.house</a>
+      <span>[+00 000 000 000]</span>
+      <span>[street, city]</span>
+      <a class="link" href="https://instagram.com/misc.house" rel="noopener" target="_blank">@misc.house</a>
+    </address>
+  </div>
+  <a class="btn btn--big magnetic" href="mailto:hello@misc.house?subject=let's%20make%20a%20thing*">start a thing <i class="glyph" data-glyph="arrow"></i></a>
+</section>
+
+</main>
+
+<footer class="footer mono">
+  <span>misc.* design house — 2026 — all rights recieved</span>
+  <span class="footer__badges"><span class="pill">est. 2025*</span><span class="pill pill--fill">et cetera</span></span>
+  <span class="footer__note">express, don't impress</span>
+</footer>
+
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
