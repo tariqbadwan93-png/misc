@@ -91,6 +91,7 @@ $$('[id]').forEach((sec) => {
   });
 });
 const readout = $('#readout'), readoutPct = $('#readoutPct');
+readout.classList.add('is-off');                            // hidden over the hero until you scroll past it
 ScrollTrigger.create({
   start: 0, end: 'max',
   onUpdate: (st) => {

@@ -24,7 +24,7 @@ body.has-cursor .cursor { display: block; }
 .cursor.is-hidden { opacity: 0; }
 
 /* ---------- readout: the site is the thing loading ---------- */
-.readout { position: fixed; right: var(--gutter); bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 48; color: var(--mute); pointer-events: none; font-variant-numeric: tabular-nums; transition: color .3s; }
+.readout { position: fixed; right: var(--gutter); bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 48; color: var(--mute); background: var(--void); padding: 6px 10px 5px; pointer-events: none; font-variant-numeric: tabular-nums; transition: color .3s, opacity .4s; }
 .readout.is-done { color: var(--lime); }
 .readout.is-off { opacity: 0; } /* the hero has its own scroll hint in that corner */
 @media (max-width: 900px) { .readout { display: none; } }
