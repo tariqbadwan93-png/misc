@@ -17,9 +17,9 @@ Then open http://localhost:8765.
 2. **Coolify → New Resource → Application → your repo.**
    - Build pack: **Dockerfile** (the one in this repo builds an nginx image).
    - Port: **80**.
-   - Domain: `https://misc.house` (and `https://www.misc.house` if you want both; add a redirect rule in Coolify).
+   - Domain: `https://wearemisc.com` (and `https://www.wearemisc.com` if you want both; add a redirect rule in Coolify).
    - Leave "Force HTTPS" on. Coolify's Traefik issues a Let's Encrypt cert.
-3. **Cloudflare DNS** (zone `misc.house`):
+3. **Cloudflare DNS** (zone `wearemisc.com`):
    - `A  @    <hetzner-ipv4>`  proxied (orange cloud)
    - `A  www  <hetzner-ipv4>`  proxied
    - If the server has IPv6, add matching `AAAA` records.

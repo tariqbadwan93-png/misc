@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://misc.house/sitemap.xml
+Sitemap: https://wearemisc.com/sitemap.xml
