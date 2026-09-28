@@ -317,7 +317,7 @@ ScrollTrigger.batch('.person', { start: 'top 88%', once: true, onEnter: (els) =>
     trigger: '#contact', start: 'top 80%', end: 'bottom bottom', scrub: true,
     onUpdate: (st) => { scrollN = Math.floor(st.progress * 4.999); render(); },
   });
-  // the fifth step — the mark — only lights as you close in on hello@misc.house
+  // the fifth step — the mark — only lights as you close in on hello@wearemisc.com
   if (fine) $('#contact').addEventListener('pointermove', (e) => {
     const r = mail.getBoundingClientRect();
     const d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));

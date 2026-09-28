@@ -28,7 +28,7 @@ Then open http://localhost:8765.
 6. **Cloudflare Speed / Scrape Shield — switch these OFF for the zone** (each one breaks something here):
    - *Rocket Loader* (reorders the GSAP/Lenis scripts before the module runs)
    - *Mirage* / *Polish* (they rewrite the dithered JPGs the canvases sample from)
-   - *Email Address Obfuscation* (wraps `hello@misc.house` in a script, killing the contact hover)
+   - *Email Address Obfuscation* (wraps `hello@wearemisc.com` in a script, killing the contact hover)
    - Leave *Brotli* and caching on; the nginx config already sets long cache headers for assets.
 7. Deploy. Every push to the tracked branch redeploys (enable the webhook in Coolify → Application → Webhooks, or leave polling on).
 8. **After each deploy: Cloudflare → Caching → Purge Everything.** CSS/JS are unversioned; nginx caches them for 10 minutes and Cloudflare's edge may hold them longer.
