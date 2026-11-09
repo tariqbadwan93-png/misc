@@ -16,7 +16,7 @@ Fine film grain over everything. Lots of empty space. Inspired by monopo.london'
 | `--teal` | `#64DBE8` | Ambient light, focus rings, text selection |
 | `--orange` | `#FF6D04` | Asterisks and the glow under the mark only |
 | `--ink` | `#E6F0F1` | Text |
-| `--mute` | `rgb(230 240 241 / .64)` | Secondary text |
+| `--mute` | `rgb(230 240 241 / .7)` | Secondary text |
 | `--line` | `rgb(230 240 241 / .16)` | Hairlines and button borders |
 
 Strategy: restrained. Teal and orange never mix in one area (they cancel to grey); in the shader each gives way to the other.
