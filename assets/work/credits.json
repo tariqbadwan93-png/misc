@@ -1,0 +1,66 @@
+[
+  {
+    "slug": "halfway-house",
+    "file": "assets/work/halfway-house.webp",
+    "photographer": "Ambitious Studio* | Rick Barrett",
+    "unsplash_url": "https://unsplash.com/photos/man-in-black-suit-jacket-holding-clear-wine-glass-UoTlkEmUDMQ",
+    "photo_id": "UoTlkEmUDMQ",
+    "alt": "A bearded bartender strains a pale cocktail from a copper shaker into a coupe glass on a marble bar lit from below by a warm amber glow."
+  },
+  {
+    "slug": "northline",
+    "file": "assets/work/northline.webp",
+    "photographer": "Joshua Kettle",
+    "unsplash_url": "https://unsplash.com/photos/a-person-walking-down-a-street-at-night-KlifoIoFOgQ",
+    "photo_id": "KlifoIoFOgQ",
+    "alt": "A silhouetted pedestrian with a backpack walks past an arched shop window filled with vertical cyan light tubes on a dark cobbled street."
+  },
+  {
+    "slug": "field-office",
+    "file": "assets/work/field-office.webp",
+    "photographer": "Nina U",
+    "unsplash_url": "https://unsplash.com/photos/silhouettes-walk-through-a-futuristic-room-with-vertical-blue-lights-1NMgny_dkas",
+    "photo_id": "1NMgny_dkas",
+    "alt": "A woman walks through an installation of hanging blue-lit light strands, her silhouette mirrored in the glossy floor."
+  },
+  {
+    "slug": "loop",
+    "file": "assets/work/loop.webp",
+    "photographer": "Akshar Dave🌻",
+    "unsplash_url": "https://unsplash.com/photos/person-holding-blue-light-in-dark-room-sgNc8aY6Z7E",
+    "photo_id": "sgNc8aY6Z7E",
+    "alt": "A hand holds a smartphone in total darkness, the screen casting a faint blue glow across the fingers."
+  },
+  {
+    "slug": "tidewater",
+    "file": "assets/work/tidewater.webp",
+    "photographer": "Arjun MJ",
+    "unsplash_url": "https://unsplash.com/photos/a-bottle-of-oil-with-a-fire-in-the-background-srzX26AjKtE",
+    "photo_id": "srzX26AjKtE",
+    "alt": "A small unlabelled glass bottle on a dark ledge stands in silhouette against a glowing orange disc of light."
+  },
+  {
+    "slug": "common-room",
+    "file": "assets/work/common-room.webp",
+    "photographer": "Robert | Visual Diary",
+    "unsplash_url": "https://unsplash.com/photos/looking-down-a-spiral-staircase-with-carpeted-steps-CIsEW7Ay4VA",
+    "photo_id": "CIsEW7Ay4VA",
+    "alt": "Looking down a spiral staircase with teal carpeted steps and a curving handrail, warm light glowing at the bottom of the stairwell."
+  },
+  {
+    "slug": "night-market",
+    "file": "assets/work/night-market.webp",
+    "photographer": "Yoav Aziz",
+    "unsplash_url": "https://unsplash.com/photos/people-cooking-meat-skewers-over-a-large-fire-at-night-ttsp4IIcWNs",
+    "photo_id": "ttsp4IIcWNs",
+    "alt": "Street vendors in face masks tend a long satay grill as flames and smoke rise into the night air."
+  },
+  {
+    "slug": "et-cetera",
+    "file": "assets/work/et-cetera.webp",
+    "photographer": "Ryunosuke Kikuno",
+    "unsplash_url": "https://unsplash.com/photos/blue-and-red-light-in-dark-room-mcVQ-UkbyLE",
+    "photo_id": "mcVQ-UkbyLE",
+    "alt": "Abstract streaks of teal, red and orange light blur diagonally across a black background."
+  }
+]
