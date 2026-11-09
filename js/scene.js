@@ -42,11 +42,11 @@ void main() {
   float curve = .25 * sin(p.x * 1.3 + t * .05 + uPage * 2.6) - .05;
   float d = p.y - curve + (r.y - .5) * .75 + (q.x - .5) * .28;
   float w = .16 + .07 * (r.x - .5);
-  float core = exp(-pow(d / (w * .55), 2.));
-  float halo = exp(-pow(d / (w * 1.8), 2.));
-  float hot  = exp(-pow(d / (w * .13), 2.));
+  float a1 = d / (w * .55), a2 = d / (w * 1.8), a3 = d / (w * .13);
+  float core = exp(-a1 * a1), halo = exp(-a2 * a2), hot = exp(-a3 * a3);
   float d2 = d + .27 + (q.y - .5) * .4;
-  float echo = exp(-pow(d2 / (w * .32), 2.));
+  float a4 = d2 / (w * .32);
+  float echo = exp(-a4 * a4);
 
   // colour runs along the ribbon. Teal and orange are complementary and turn grey when blended,
   // so each is weighted by a squared ramp: they meet through a darker seam, never a grey one.
@@ -125,6 +125,8 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
     uniforms: { uTex: { value: fieldRT.texture }, uTime: { value: 0 }, uGrain: { value: 0.085 }, uPx: { value: dpr } },
   });
   const backdrop = new THREE.Mesh(quad, showMat);
+  // grain only on screen: refracted through the glass it turns into streaks
+  backdrop.onBeforeRender = (r) => { showMat.uniforms.uGrain.value = r.getRenderTarget() ? 0 : 0.085; };
   backdrop.frustumCulled = false;
   backdrop.renderOrder = -1;
   scene.add(backdrop);
@@ -163,7 +165,7 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
     wx: 0, wy: 0, dYaw: 0, dPitch: 0, dragging: false,
   };
   const AX = new THREE.Vector3(1, 0, 0), AY = new THREE.Vector3(0, 1, 0), qa = new THREE.Quaternion();
-  let baseScale = 1, w = 0, h = 0;
+  let baseScale = 1, w = 0, h = 0, lost = false, hover = null;
 
   function resize() {
     const cw = canvas.clientWidth, ch = canvas.clientHeight;
@@ -192,17 +194,18 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
     if (!reduced) { s.time += dt; s.flow += dt * (1 + stir); }
 
     // spin: direct while dragged, then momentum that eases back into the idle turn
-    let yaw, pitch;
+    // pending drag movement is always applied, even if it arrived after the release
+    let yaw = s.dYaw, pitch = s.dPitch;
+    s.dYaw = s.dPitch = 0;
     if (s.dragging) {
-      yaw = s.dYaw; pitch = s.dPitch; s.dYaw = s.dPitch = 0;
       const kw = 1 - Math.exp(-dt * 18);
       s.wy += (yaw / dt - s.wy) * kw;
       s.wx += (pitch / dt - s.wx) * kw;
     } else {
       const decay = Math.exp(-dt * 1.3);
       s.wy *= decay; s.wx *= decay;
-      yaw = (s.wy + (reduced ? 0 : 0.38 + stir * 0.8)) * dt;
-      pitch = s.wx * dt;
+      yaw += (s.wy + (reduced ? 0 : 0.38 + stir * 0.8)) * dt;
+      pitch += s.wx * dt;
     }
     s.q.premultiply(qa.setFromAxisAngle(AY, yaw)).premultiply(qa.setFromAxisAngle(AX, pitch)).normalize();
     model.quaternion.copy(s.q);
@@ -213,7 +216,7 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
     u.uMix.value = s.mix;
     u.uPage.value = s.page;
     u.uPointer.value.set(s.px, s.py);
-    showMat.uniforms.uTime.value = s.time;
+    showMat.uniforms.uTime.value = s.time % 10; // a 10s grain loop; an ever-growing clock degrades the hash into a visible tile
 
     const hero = s.hero;
     const bob = reduced ? 0 : Math.sin(s.time * 0.9) * 0.07; // floating
@@ -221,6 +224,8 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
     mark.rotation.set(s.py * 0.3, s.px * 0.4, reduced ? 0 : Math.sin(s.time * 0.55) * 0.05);
     mark.position.set(s.px * 0.12, hero * 2.7 - s.py * 0.08 + bob, -hero * 1.5);
     mark.scale.setScalar(baseScale * (1 - hero * 0.25));
+    // the mark moves with scroll; keep the grab cursor honest even when the mouse is still
+    if (grabArea && hover && !s.dragging) grabArea.classList.toggle('is-grab', overMark(hover.x, hover.y));
   }
 
   function render() {
@@ -242,7 +247,7 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
     render();
   }
   function requestRender() {
-    if (dirty) return;
+    if (lost || dirty) return;
     dirty = true;
     requestAnimationFrame(() => { dirty = false; update(1 / 60); render(); });
   }
@@ -256,7 +261,7 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
   // ---- grab and spin: a generous circle around the mark is the handle ----
   const v1 = new THREE.Vector3(), v2 = new THREE.Vector3();
   function overMark(x, y) {
-    if (!mark.visible) return false;
+    if (lost || !mark.visible) return false;
     mark.getWorldPosition(v1);
     v2.copy(v1).addScaledVector(AX, 1.17 * mark.scale.x); // the arm's reach in world units
     v1.project(camera); v2.project(camera);
@@ -267,10 +272,14 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
   if (grabArea) {
     let drag = null;
     grabArea.addEventListener('pointermove', (e) => {
-      if (!drag && e.pointerType === 'mouse') grabArea.classList.toggle('is-grab', overMark(e.clientX, e.clientY));
+      if (e.pointerType === 'touch') return;
+      hover = { x: e.clientX, y: e.clientY };
+      if (!drag) grabArea.classList.toggle('is-grab', overMark(e.clientX, e.clientY));
     }, { passive: true });
+    grabArea.addEventListener('pointerleave', () => { hover = null; if (!drag) grabArea.classList.remove('is-grab'); });
     grabArea.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0 || !overMark(e.clientX, e.clientY)) return;
+      if (drag || e.button !== 0 || !overMark(e.clientX, e.clientY)) return; // one finger at a time
+      state.dYaw = state.dPitch = state.wx = state.wy = 0; // a grab catches the spin
       e.preventDefault(); // no text selection or native drag while spinning
       drag = { id: e.pointerId, x: e.clientX, y: e.clientY, touch: e.pointerType === 'touch' };
       state.dragging = true;
@@ -304,7 +313,9 @@ export async function createScene(canvas, { reduced = false, grabArea = null } =
   addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(resize, 120); }, { passive: true });
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    lost = true;
     cancelAnimationFrame(raf);
+    grabArea?.classList.remove('is-grab', 'is-grabbing');
     document.documentElement.classList.add('no-webgl');
   });
 

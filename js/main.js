@@ -41,7 +41,7 @@ let scene = null;
 let mix = { work: 0.42, inWork: false, inContact: false };
 const applyMix = () => scene?.setMix(mix.inContact ? 0.86 : mix.inWork ? mix.work : 0.42);
 
-import('./scene.js?v=3')
+import('./scene.js?v=4')
   .then(({ createScene }) => createScene($('#scene'), { reduced, grabArea: $('.hero') }))
   .then((s) => {
     scene = s;
