@@ -8,6 +8,11 @@ const root = document.documentElement;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || new URLSearchParams(location.search).has('static');
 if (reduced) root.classList.add('reduced');
 
+// a visible way to stop the moving backdrop (WCAG 2.2.2); the system setting already does it on its own
+const motionLink = $('.js-motion');
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) motionLink.remove();
+else if (reduced) { motionLink.textContent = 'Motion on'; motionLink.href = location.pathname; }
+
 gsap.registerPlugin(ScrollTrigger, SplitText);
 ScrollTrigger.config({ ignoreMobileResize: true });
 

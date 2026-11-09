@@ -28,18 +28,20 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
   q('.js-total').textContent = pad(N - 1);
   section.style.setProperty('--n', N);
   const D = (s) => (reduced ? 0 : s);
+  const root = document.documentElement;
 
   // ---------- geometry (recomputed on every ScrollTrigger refresh) ----------
   const g = { top: 0, span: 1, perCard: 1 };
   function measure() {
-    const W = stage.clientWidth, H = stage.clientHeight, mobile = W < 760;
+    const W = stage.clientWidth, H = stage.clientHeight, mobile = matchMedia('(max-width: 760px)').matches; // same breakpoint as the CSS
     // the card's real size is its detail size; in the row it is scaled down, which keeps the image crisp
     let ch, cx, cy;
     if (mobile) {
       const cw0 = Math.min(W * 0.86, H * 0.5 * 0.75);
       ch = cw0 / 0.75; cx = W / 2; cy = Math.max(70, H * 0.085) + ch / 2;
     } else {
-      ch = Math.min(H * 0.74, (W * 0.48) / 0.75); cx = W * 0.64; cy = H * 0.52;
+      // keep the open card clear of the fixed header on short (landscape) screens
+      ch = Math.min(H * 0.74, H - 2 * 84, (W * 0.48) / 0.75); cx = W * 0.64; cy = Math.max(H * 0.52, 84 + ch / 2);
     }
     const cw = ch * 0.75;
     const th = H * (mobile ? 0.44 : 0.42);
@@ -53,6 +55,7 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
     stage.style.setProperty('--ch', `${ch}px`);
     stage.style.setProperty('--ts', ts.toFixed(3));
     stage.style.setProperty('--persp', `${mobile ? 900 : 1200}px`);
+    // first guess only; ScrollTrigger's own start/end replace these on every refresh
     g.top = section.getBoundingClientRect().top + scrollY;
     g.span = Math.max(1, section.offsetHeight - H);
     g.perCard = g.span / Math.max(1, N - 1);
@@ -90,7 +93,7 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
       const el = cards[i].style;
       el.transform = `translate3d(${(x - g.cw / 2).toFixed(2)}px,${(y - g.ch / 2).toFixed(2)}px,${z.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(${s.toFixed(4)})`;
       el.opacity = a.toFixed(3);
-      el.zIndex = o > 0.001 ? 5000 + Math.round(o * 100) : 1000 - Math.round(d * 100);
+      el.zIndex = o > 0.001 ? 5000 + Math.round(o * 100) : N - i; // row order never changes, so this only changes on open/close
       el.pointerEvents = a < 0.35 ? 'none' : '';
     }
     ui.caption.style.opacity = ui.head.style.opacity = (1 - go).toFixed(3);
@@ -113,15 +116,22 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
     const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
     last = now;
     render(dt);
-    raf = visible || openIndex >= 0 ? requestAnimationFrame(frame) : 0;
+    // reduced motion renders one frame per change instead of looping
+    raf = !reduced && (visible || openIndex >= 0) ? requestAnimationFrame(frame) : 0;
   }
   const wake = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
 
   // ---------- scroll ----------
   ScrollTrigger.create({
     trigger: section, start: 'top top', end: 'bottom bottom',
-    onUpdate: (st) => { pTarget = st.progress * (N - 1); },
-    onRefresh: (st) => { measure(); pTarget = st.progress * (N - 1); wake(); },
+    onUpdate: (st) => { pTarget = st.progress * (N - 1); if (reduced) wake(); },
+    onRefresh: (st) => {
+      measure();
+      g.top = st.start; g.span = Math.max(1, st.end - st.start); g.perCard = g.span / Math.max(1, N - 1);
+      pTarget = st.progress * (N - 1);
+      if (openIndex >= 0) scrollTo(cardScroll(openIndex), { immediate: true }); // a resize mid-view keeps the open card
+      wake();
+    },
   });
   ScrollTrigger.create({
     trigger: section, start: 'top bottom', end: 'bottom top',
@@ -145,8 +155,10 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
 
   // ---------- drag to pan (mouse and sideways touch); vertical touch stays native scroll ----------
   let drag = null, suppressClick = false;
+  const pinned = () => scrollY >= g.top - 1 && scrollY <= g.top + g.span + 1;
+  track.addEventListener('dragstart', (e) => e.preventDefault()); // native image drag would cancel the pan
   track.addEventListener('pointerdown', (e) => {
-    if (openIndex >= 0 || e.button !== 0) return;
+    if (openIndex >= 0 || e.button !== 0 || !pinned()) return;
     drag = { id: e.pointerId, x: e.clientX, y0: scrollY, moved: false, vx: 0, lx: e.clientX, lt: performance.now() };
   });
   addEventListener('pointermove', (e) => {
@@ -169,7 +181,7 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
       suppressClick = true;
       setTimeout(() => (suppressClick = false), 60);
       // fling, then settle on the nearest card
-      const flung = scrollY - drag.vx * 280 * (g.perCard / g.gx);
+      const flung = scrollY + clamp((-drag.vx * 280) / g.gx, -2, 2) * g.perCard; // at most two cards per flick
       scrollTo(g.top + Math.round((flung - g.top) / g.perCard) * g.perCard, { duration: 1.1, easing: easeOut });
     }
     drag = null;
@@ -180,10 +192,12 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
 
   // trackpad sideways swipes pan the row too
   track.addEventListener('wheel', (e) => {
-    if (openIndex >= 0 || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    if (openIndex >= 0 || Math.abs(e.deltaX) <= Math.abs(e.deltaY) || !pinned()) return;
     e.preventDefault();
+    e.stopPropagation(); // keep Lenis's window wheel handler from overriding this
     const from = lenis ? lenis.targetScroll : scrollY;
-    scrollTo(from + e.deltaX * (g.perCard / g.gx));
+    // not programmatic, so Lenis keeps the destination and successive swipes add up
+    scrollTo(from + e.deltaX * (g.perCard / g.gx), { programmatic: false });
   }, { passive: false });
 
   // ---------- keyboard: focusing a card brings it to the front; arrows walk the row ----------
@@ -202,7 +216,7 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
   });
 
   // ---------- open / step / close ----------
-  const outside = [...document.querySelectorAll('.top, .hero, .studio, .contact, .foot')].concat(track);
+  const outside = [...document.querySelectorAll('.skip, .top, .hero, .studio, .work__head, .contact, .foot')].concat(track);
   let lastFocus = null;
 
   function fill(i) {
@@ -224,6 +238,8 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
     gsap.killTweensOf(ui.detail.children);
     ui.detail.hidden = false;
     outside.forEach((el) => (el.inert = true));
+    root.classList.add('is-locked'); // also covers reduced motion, where there is no Lenis
+    stage.classList.add('has-open');
     lenis?.stop();
     scrollTo(cardScroll(i), { duration: 1.1, easing: easeOut });
     gsap.to(openState[i], { v: 1, duration: D(1.1), ease: 'power4.inOut', overwrite: true });
@@ -247,6 +263,7 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
       opacity: 0, y: -8 * dir, duration: D(0.22), ease: 'power2.in', overwrite: true,
       onComplete: () => { fill(j); gsap.fromTo(text, { opacity: 0, y: 10 * dir }, { opacity: 1, y: 0, duration: D(0.6), stagger: D(0.04), ease: 'expo.out' }); },
     });
+    wake();
   }
 
   function close() {
@@ -259,9 +276,12 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
       onComplete: () => { if (openIndex < 0) ui.detail.hidden = true; },
     });
     outside.forEach((el) => (el.inert = false));
+    root.classList.remove('is-locked');
+    stage.classList.remove('has-open');
     lenis?.start();
     document.removeEventListener('keydown', onKey);
     lastFocus?.focus({ preventScroll: true });
+    wake();
   }
 
   function onKey(e) {
@@ -288,5 +308,6 @@ export function createGallery(section, { lenis = null, reduced = false, onActive
 
   measure();
   render(0);
+  hits.forEach((h) => (h.disabled = false)); // the buttons ship disabled so they never look clickable without JS
   return { measure };
 }

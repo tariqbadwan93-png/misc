@@ -5,7 +5,7 @@
   --teal: #64DBE8;
   --orange: #FF6D04;
   --ink: #E6F0F1;
-  --mute: rgb(230 240 241 / .64);
+  --mute: rgb(230 240 241 / .7);
   --line: rgb(230 240 241 / .16);
 
   --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -22,7 +22,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { background: var(--pearl); color: var(--ink); -webkit-text-size-adjust: 100%; }
+html { background: var(--pearl); color: var(--ink); -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
+html.is-locked { overflow: hidden; } /* while a project is open; the gutter stops the layout jumping */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 body {
@@ -75,6 +76,14 @@ h1, h2, h3, p { margin: 0; font-weight: inherit; }
 }
 
 main, .foot { position: relative; z-index: var(--z-content); }
+main { overflow-x: clip; } /* the soft text plates may bleed past the edges; never scroll sideways (clip keeps sticky working) */
+
+/* A soft dark plate behind text that can sit over the orange light, so it keeps AA contrast. Invisible on the dark ground. */
+.hero__copy, .studio__note { position: relative; }
+.hero__copy::before, .studio__note::before, .is-3d .work__caption::before, .is-3d .work__detail::before {
+  content: ''; position: absolute; inset: -3rem -3.5rem; z-index: -1; pointer-events: none;
+  background: rgb(4 20 30 / .5); border-radius: 4rem; filter: blur(36px);
+}
 
 /* ---------- header ---------- */
 .top {
@@ -194,10 +203,19 @@ main, .foot { position: relative; z-index: var(--z-content); }
 }
 .work__detail-nav button:hover { border-color: var(--ink); }
 .work__detail-nav button:active { transform: scale(.97); }
+.work__detail-nav button:disabled { opacity: .35; cursor: default; pointer-events: none; }
+.card__hit:disabled { cursor: default; }
+.work__stage.has-open { cursor: zoom-out; }
+.work__stage.has-open .work__detail { cursor: auto; }
 .work__detail-nav .js-close { background: var(--ink); color: var(--pearl); border-color: var(--ink); }
 
 /* ---------- contact + footer ---------- */
-.contact { padding: clamp(9rem, 30vh, 18rem) var(--gutter) clamp(5rem, 16vh, 9rem); }
+/* a full screen tall, so the pinned gallery has fully scrolled away by the time the footer is reached */
+.contact {
+  min-height: 100vh; min-height: 100svh; display: grid; align-content: center;
+  padding: clamp(9rem, 30vh, 18rem) var(--gutter) clamp(5rem, 16vh, 9rem);
+}
+.contact__big { justify-self: start; }
 .contact__big {
   display: inline-block;
   font-size: clamp(3rem, 9vw, 6rem); font-weight: 300; line-height: .98; letter-spacing: -.04em;
@@ -220,16 +238,26 @@ main, .foot { position: relative; z-index: var(--z-content); }
   .hero__scroll { display: none; }
   .studio { display: block; }
   .studio__note { margin-top: 2.5rem; }
-  .is-3d .work__detail {
-    top: auto; transform: none; width: auto;
-    right: var(--gutter); bottom: max(var(--gutter), env(safe-area-inset-bottom));
-  }
+  .is-3d .work__detail { top: auto; transform: none; width: auto; }
   .work__detail-title { margin-top: .8rem; font-size: 1.75rem; }
   .work__desc { margin-top: .7rem; font-size: .9375rem; }
   .work__detail-nav { margin-top: 1.2rem; }
+  .is-3d .work__detail {
+    left: 0; right: 0; bottom: 0; max-height: calc(100svh - 5rem); overflow: hidden auto;
+    padding: 2.25rem var(--gutter) max(var(--gutter), env(safe-area-inset-bottom));
+    background: linear-gradient(rgb(4 20 30 / 0), rgb(4 20 30 / .85) 2.25rem);
+  }
+  .is-3d .work__detail::before { display: none; }
+}
+
+/* landscape phones and short windows: put the panel under the header instead of centring it */
+@media (min-width: 761px) and (max-height: 520px) {
+  .is-3d .work__detail { top: calc(var(--gutter) * .75 + 3.25rem); transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero__scroll::after { animation: none; transform: none; }
   .scene { transition: none; }
 }
+html.reduced .hero__scroll::after { animation: none; transform: none; }
+html.reduced .scene { transition: none; }

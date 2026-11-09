@@ -142,7 +142,7 @@ export async function createScene(canvas, { reduced = false } = {}) {
 
   function resize() {
     const cw = canvas.clientWidth, ch = canvas.clientHeight;
-    if (cw === w && Math.abs(ch - h) < 120 && w) return; // ignore mobile URL-bar jitter
+    if (cw === w && ch === h) return; // the canvas is 100lvh, so mobile URL-bar moves don't change it
     w = cw; h = ch;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
@@ -188,12 +188,13 @@ export async function createScene(canvas, { reduced = false } = {}) {
     renderer.render(scene, camera);
   }
 
-  // ---- loop: 60fps while the mark is on screen, 30fps for the field alone, nothing when reduced ----
-  let raf = 0, last = 0, odd = false, dirty = false;
+  // ---- loop: ~60fps while the mark is on screen, ~30fps for the field alone (at any refresh rate), nothing when reduced ----
+  let raf = 0, last = 0, next = 0, dirty = false;
   function frame(now) {
     raf = requestAnimationFrame(frame);
+    if (now < next - 2) return; // 2ms slack so a 60Hz display never skips a frame
+    next = Math.max(next + (mark.visible ? 1000 / 60 : 1000 / 30), now); // keeps the grid, resyncs after a stall
     const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
-    if (!mark.visible && (odd = !odd)) return;
     last = now;
     update(dt);
     render();
