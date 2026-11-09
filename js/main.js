@@ -36,13 +36,13 @@ $$('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
   el.focus({ preventScroll: true });
 }));
 
-/* ---------- backdrop: the light field + glass asterisk, loaded after first paint ---------- */
+/* ---------- backdrop: the liquid light + the glass asterisk you can spin, loaded after first paint ---------- */
 let scene = null;
 let mix = { work: 0.42, inWork: false, inContact: false };
 const applyMix = () => scene?.setMix(mix.inContact ? 0.86 : mix.inWork ? mix.work : 0.42);
 
-import('./scene.js')
-  .then(({ createScene }) => createScene($('#scene'), { reduced }))
+import('./scene.js?v=3')
+  .then(({ createScene }) => createScene($('#scene'), { reduced, grabArea: $('.hero') }))
   .then((s) => {
     scene = s;
     $('#scene').classList.add('is-ready');
